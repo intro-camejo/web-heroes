@@ -73,7 +73,7 @@ def add_character(character: dict[str, str]) -> bool:
     writer.writerow(header)
 
     for key in header:
-        if key.lower() not in character and key.lower() == "id":
+        if key.lower() not in character:
             print("Character format is incorrect")
             return False
 
@@ -94,3 +94,29 @@ def add_character(character: dict[str, str]) -> bool:
 
     os.rename(TMP_FILE, DATA_FILE)
     return True
+
+
+def edit_character(character: dict[str, str]) -> bool:
+    TMP_FILE = str(DATA_FILE + ".tmp")
+
+    reader = _file_reader()
+    writer = _file_writer(TMP_FILE)
+
+    header = next(reader)
+    writer.writerow(header)
+
+    for key in header:
+        if key.lower() not in character:
+            print("Character format is incorrect")
+            return False
+
+    edited = False
+    for row in reader:
+        if str(row[0]) == str(character["id"]):
+            edited = True
+            writer.writerow(_row_from_object(header, character))
+        else:
+            writer.writerow(row)
+
+    os.rename(TMP_FILE, DATA_FILE)
+    return edited
