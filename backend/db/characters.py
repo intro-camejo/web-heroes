@@ -11,8 +11,8 @@ def _file_reader() -> list[str]:
     return reader
 
 
-def _file_writer(filename: str):
-    file = open(filename, "w")
+def _file_writer(filename: str, mode: str = "w"):
+    file = open(filename, mode)
     writer = csv.writer(file, delimiter = '\t')
 
     return writer
@@ -20,6 +20,10 @@ def _file_writer(filename: str):
 
 def _object_from_row(header: list[str], row: list[str]) -> dict[str, str]:
     return {header[i].lower(): row[i] for i in range(len(header))}
+
+
+def _row_from_object(header: list[str], row: dict[str, str]) -> list[str]:
+    return [row[key.lower()] for key in header]
 
 
 def get_all_characters() -> list[dict[str, str]]:
@@ -57,3 +61,36 @@ def remove_character(id: int) -> bool:
     os.rename(str(DATA_FILE) + ".tmp", DATA_FILE)
 
     return found
+
+
+def add_character(character: dict[str, str]) -> bool:
+    TMP_FILE = str(DATA_FILE + ".tmp")
+
+    reader = _file_reader()
+    writer = _file_writer(TMP_FILE)
+
+    header = next(reader)
+    writer.writerow(header)
+
+    for key in header:
+        if key.lower() not in character and key.lower() == "id":
+            print("Character format is incorrect")
+            return False
+
+    added = False
+    for row in reader:
+        if str(row[0]) == str(character["id"]):
+            print("Character ID already exists")
+            os.remove(TMP_FILE)
+            return False
+        elif int(row[0]) > int(character["id"]) and not added:
+            added = True
+            writer.writerow(_row_from_object(header, character))
+
+        writer.writerow(row)
+
+    if not added:
+        writer.writerow(_row_from_object(header, character))
+
+    os.rename(TMP_FILE, DATA_FILE)
+    return True
