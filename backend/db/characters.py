@@ -1,7 +1,7 @@
 import csv
 import os
 
-DATA_FILE = os.path.join(os.environ.get("DATA_PATH", "../../data"), "characters.csv")
+DATA_FILE = os.path.join(os.environ.get("DATA_PATH", "../data"), "characters.csv")
 
 
 def _file_reader() -> list[str]:
