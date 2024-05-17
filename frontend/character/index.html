@@ -28,11 +28,16 @@
                             <div class="col-6">
                                 <h2 id="name">Loading...</h2>
                                 <h4 id="alignment" class="text-decoration-underline"></h4>
+                                <h5>Alternative names</h5>
+                                <ul id="names">
+                                    
+                                </ul>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-danger" onclick="remove_character()">Remove</button>
+                        <a id="btnEdit" class="btn btn-warning" href="/character/edit">Edit</a>
                     </div>
                 </div>
             </div>
@@ -49,6 +54,8 @@
         if (id === null) {
             window.location.href = "/";
         }
+
+        document.getElementById("btnEdit").setAttribute("href", `/character/edit?id=${id}`)
 
         function response_received(response) {
             return response.json()
@@ -72,6 +79,14 @@
                 alignment.classList.add("text-danger")
             } else {
                 alignment.classList.add("text-warning")
+            }
+
+            const namesList = character.names.split(",")
+            const names = document.getElementById("names");
+            for (let index = 0; index < namesList.length; index++) {
+                const element = document.createElement("li")
+                element.innerText = namesList[index]
+                names.append(element)
             }
         }
 
