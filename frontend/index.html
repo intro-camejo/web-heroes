@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heroes</title>
+</head>
+<body>
+    <h1>Heroes</h1>
+
+    <ul id="lista">
+
+    </ul>
+    
+    <script>
+        function response_received(response){
+            return response.json()
+        }
+        function parse_data(content){
+            let i
+            lista= document.getElementById("lista")
+            for(i=0;i<content.length;i++){
+                item= document.createElement("li") //creo el li
+                item.append(content[i].name) //agrego el contenido a li
+                lista.append(item) // agrego li con contenido lista
+            }
+
+        }
+        function request_error(error){
+            console.log(error)
+        }
+
+        fetch("http://localhost:5000/characters").then(response_received).then(parse_data).catch(request_error)
+    
+    </script>
+</body>
+</html>
